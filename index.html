@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Happy Birthday, Love! 🎂💖</title>
+    <meta name="description" content="A lovely, animated birthday surprise page." />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles.css" />
+
+    <!-- Confetti (tiny, no deps) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <!-- App Script -->
+    <script defer src="./script.js"></script>
+  </head>
+  <body>
+    <!-- Floating background hearts -->
+    <div id="hearts-container" aria-hidden="true"></div>
+
+    <!-- Soft gradient overlay -->
+    <div class="bg-gradient" aria-hidden="true"></div>
+
+    <!-- Startup personalization gate -->
+    <div id="gate" class="overlay" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+      <div class="overlay-card">
+        <h1 id="gate-title" class="title">A Little Birthday Surprise 🎉</h1>
+        <p class="muted">Personalize it to make it extra special</p>
+        <form id="gate-form" autocomplete="on">
+          <label class="input-label" for="gfName">Her name</label>
+          <input id="gfName" name="gfName" class="input" placeholder="e.g., My Love" required />
+
+          <label class="input-label" for="fromName">Your name</label>
+          <input id="fromName" name="fromName" class="input" placeholder="e.g., Alex" required />
+
+          <button id="startBtn" type="submit" class="btn primary">Start the Surprise ✨</button>
+          <p class="privacy-note">We only store this in your browser</p>
+        </form>
+      </div>
+    </div>
+
+    <main class="container" id="app" aria-live="polite">
+      <section class="hero card shadow pop-in" id="hero">
+        <h1 class="hb-title">
+          Happy Birthday, <span id="nameTarget">Beautiful</span>! 💝
+        </h1>
+        <p class="hb-subtitle">Wishing you a day as wonderful as you are.</p>
+
+        <div class="controls">
+          <button id="revealBtn" class="btn glow">Reveal Wishes 🎁</button>
+          <button id="musicBtn" class="btn">Music: Off 🔇</button>
+          <button id="shareBtn" class="btn">Share the Love 💌</button>
+        </div>
+      </section>
+
+      <section id="wishes" class="card shadow wishes hidden" aria-hidden="true">
+        <div id="typewriter" class="typewriter"></div>
+        <div class="confetti-hint">Tap anywhere for more confetti 🎊</div>
+      </section>
+
+      <section id="gallery" class="gallery">
+        <figure class="polaroid tilt-left">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop" alt="Cupcake with candle" />
+          <figcaption>Make a wish ✨</figcaption>
+        </figure>
+        <figure class="polaroid tilt-right">
+          <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?q=80&w=800&auto=format&fit=crop" alt="Heart balloons" />
+          <figcaption>So loved 💖</figcaption>
+        </figure>
+        <figure class="polaroid tilt-left">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" alt="Sparkles" />
+          <figcaption>Shine on ✨</figcaption>
+        </figure>
+      </section>
+    </main>
+
+    <!-- Background music (royalty-free) -->
+    <audio id="bgMusic" preload="auto" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6b6cd77acf.mp3?filename=happy-day-113985.mp3"></audio>
+
+    <!-- Small toast -->
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
