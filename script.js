@@ -3,11 +3,9 @@
   const qs = (sel, el = document) => el.querySelector(sel);
   const qsa = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
-  const gate = qs('#gate');
-  const gateForm = qs('#gate-form');
-  const gfNameInput = qs('#gfName');
-  const fromNameInput = qs('#fromName');
-  const nameTarget = qs('#nameTarget');
+  // Fixed names per request
+  const GF_NAME = 'Archana';
+  const FROM_NAME = 'Jishnu';
 
   const revealBtn = qs('#revealBtn');
   const musicBtn = qs('#musicBtn');
@@ -33,7 +31,6 @@
   }
 
   function personalize(gfName, fromName) {
-    nameTarget.textContent = gfName || 'Beautiful';
     messages = [
       `To my dearest ${gfName},`,
       'Today the world sparkles a little brighter,',
@@ -81,18 +78,16 @@
 
   function fireConfetti(burst = 0.25) {
     try {
-      // canvas-confetti global
       const count = Math.floor(200 * burst);
       const defaults = { origin: { y: 0.7 } };
       confetti({ ...defaults, particleCount: count, spread: 70, angle: 60 });
       confetti({ ...defaults, particleCount: count, spread: 70, angle: 120 });
     } catch (e) {
-      // no-op if library unavailable
+      // confetti lib may be blocked; ignore
     }
   }
 
   function spawnHearts() {
-    // Create a floating heart element with random size/position
     const heart = document.createElement('span');
     heart.className = 'heart';
     heart.textContent = '♥';
@@ -105,13 +100,11 @@
     heart.style.animationDuration = `${duration}s`;
     heart.style.animationDelay = `${delay}s`;
     heartsContainer.appendChild(heart);
-    // Clean up after animation
     window.setTimeout(() => heart.remove(), (duration + delay) * 1000 + 200);
   }
 
   function startHearts() {
     if (heartsIntervalId) return;
-    // burst a few hearts at start
     for (let i = 0; i < 12; i += 1) spawnHearts();
     heartsIntervalId = window.setInterval(spawnHearts, 600);
   }
@@ -144,7 +137,6 @@
 
   function enableTapConfetti() {
     document.addEventListener('click', (ev) => {
-      // Reduce accidental triggers on control buttons by checking target roles
       const t = ev.target;
       const isButton = t.closest && t.closest('button');
       if (!isButton) fireConfetti(0.12);
@@ -152,8 +144,7 @@
   }
 
   async function shareLove() {
-    const gfName = nameTarget.textContent || 'my love';
-    const text = `Happy Birthday, ${gfName}! 💖\nI made you a little surprise.`;
+    const text = `Happy Birthday, ${GF_NAME}! 💖\nA little surprise for you.`;
     try {
       if (navigator.share) {
         await navigator.share({ title: 'Happy Birthday 💖', text, url: window.location.href });
@@ -166,48 +157,16 @@
     }
   }
 
-  function hydrateFromStorage() {
-    try {
-      const saved = JSON.parse(localStorage.getItem('hb-personalization') || '{}');
-      if (saved.gfName) gfNameInput.value = saved.gfName;
-      if (saved.fromName) fromNameInput.value = saved.fromName;
-      if (saved.gfName && saved.fromName) {
-        personalize(saved.gfName, saved.fromName);
-      }
-    } catch (_) {}
-  }
-
-  function saveToStorage(gfName, fromName) {
-    try {
-      localStorage.setItem('hb-personalization', JSON.stringify({ gfName, fromName }));
-    } catch (_) {}
-  }
-
   // Event wiring
   document.addEventListener('DOMContentLoaded', () => {
-    hydrateFromStorage();
+    personalize(GF_NAME, FROM_NAME);
 
-    gateForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const gfName = gfNameInput.value.trim() || 'Beautiful';
-      const fromName = fromNameInput.value.trim() || 'Me';
-      personalize(gfName, fromName);
-      saveToStorage(gfName, fromName);
+    startHearts();
+    fireConfetti(0.8);
+    enableTapConfetti();
 
-      // Close gate with a soft fade
-      gate.style.transition = 'opacity 320ms ease, visibility 0s linear 320ms';
-      gate.style.opacity = '0';
-      gate.style.visibility = 'hidden';
-
-      // Start magic
-      startHearts();
-      fireConfetti(0.8);
-      typewriterEl.textContent = '';
-      typedIndex = 0;
-      typeLine();
-      tryPlayMusic();
-      enableTapConfetti();
-    });
+    typewriterEl.textContent = '';
+    typedIndex = 0;
 
     revealBtn.addEventListener('click', () => {
       wishesSection.classList.remove('hidden');
@@ -218,5 +177,8 @@
 
     musicBtn.addEventListener('click', toggleMusic);
     shareBtn.addEventListener('click', shareLove);
+
+    // Attempt gentle autoplay (may be blocked by browser)
+    window.setTimeout(tryPlayMusic, 300);
   });
 })();
